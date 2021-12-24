@@ -28,9 +28,17 @@ class BookRepository extends ServiceEntityRepository
             ->where('b.title LIKE :val')
             ->setParameter('val', "%".$value."%")
             ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
+    }
+
+    public function countBookCopies()
+    {
+        return $this->createQueryBuilder('b')
+            ->select('SUM(b.copies) as totalCopies')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
     
 

@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    function makeGenreTags()
+    {
+        var input = document.getElementById("book_genres");
+        var display = document.getElementById("genres-display");
+        var genres = input.value.split(",");
+
+        display.innerHTML = "";
+
+        genres.forEach(function(genre) {
+            var span = document.createElement("span");
+            var remove = document.createElement("button");
+            if(genre.length > 0) {   
+                span.innerHTML = genre.trim();
+                if(!display.getAttribute('data-remove')) {
+                    span.appendChild(remove);
+                }
+                span.classList.add("badge");
+                span.classList.add("bg-warning");
+                span.classList.add("text-dark");
+                span.classList.add("m-1");
+                remove.classList.add("btn");
+                remove.classList.add("btn-close");
+                remove.classList.add("btn-sm");
+                remove.addEventListener("click", function() {
+                    var currentGenres = document.getElementById("book_genres").value.split(",");
+                    var index = genres.indexOf(genre.trim());
+                    if (index !== -1) {
+                      genres.splice(index, 1);
+                    }
+                    document.getElementById("book_genres").value = genres.join(",");
+                    makeGenreTags();
+                });
+                display.appendChild(span);
+            }
+        });
+    }
+
+    function addGenre()
+    {
+        var input = document.getElementById("book_genres");
+        var name = document.getElementById("new_genre").value;
+        var genres = input.value.split(",");
+        genres.push(name.trim());
+        input.value = genres.join(",");
+        makeGenreTags();
+        document.getElementById("new_genre").value = "";
+        return false;
+    }
+
+    makeGenreTags();
+</script>
