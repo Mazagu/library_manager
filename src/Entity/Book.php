@@ -30,18 +30,17 @@ class Book
     private $copies;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Genre::class, mappedBy="name")
-     */
-    private $genres;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="relation", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="book", orphanRemoval=true)
      */
     private $loans;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $genres;
+
     public function __construct()
     {
-        $this->genres = new ArrayCollection();
         $this->loans = new ArrayCollection();
     }
 
@@ -75,33 +74,6 @@ class Book
     }
 
     /**
-     * @return Collection|Genre[]
-     */
-    public function getGenres(): Collection
-    {
-        return $this->genres;
-    }
-
-    public function addGenre(Genre $genre): self
-    {
-        if (!$this->genres->contains($genre)) {
-            $this->genres[] = $genre;
-            $genre->addName($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGenre(Genre $genre): self
-    {
-        if ($this->genres->removeElement($genre)) {
-            $genre->removeName($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Loan[]
      */
     public function getLoans(): Collection
@@ -113,7 +85,7 @@ class Book
     {
         if (!$this->loans->contains($loan)) {
             $this->loans[] = $loan;
-            $loan->setRelation($this);
+            $loan->setLoan($this);
         }
 
         return $this;
@@ -123,11 +95,32 @@ class Book
     {
         if ($this->loans->removeElement($loan)) {
             // set the owning side to null (unless already changed)
-            if ($loan->getRelation() === $this) {
-                $loan->setRelation(null);
+            if ($loan->getLoan() === $this) {
+                $loan->setLoan(null);
             }
         }
 
         return $this;
+    }
+
+    public function getGenres(): ?string
+    {
+        return $this->genres;
+    }
+
+    public function setGenres(?string $genres): self
+    {
+        $this->genres = $genres;
+
+        return $this;
+    }
+
+    public function getAvailableCopies()
+    {
+        $current_loans = $this->loans->filter(function($element) {
+            return $element->getReturnDate() === null;
+        });
+
+        return $this->copies - count($current_loans);
     }
 }

@@ -14,11 +14,7 @@ class LoanType extends AbstractType
         $builder
             ->add('name')
             ->add('id_card')
-            ->add('phone_number')
-            ->add('loan_date')
-            ->add('return_date')
-            ->add('book')
-        ;
+            ->add('phone_number');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

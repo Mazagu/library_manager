@@ -4,8 +4,19 @@
 
 {% block body %}
     <h1>Book index</h1>
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+              <input name="search" type="text" class="form-control" placeholder="Search title" aria-label="Search title" aria-describedby="button-addon2" value="{{search}}">
+              <button class="btn btn-outline-light" type="submit" id="button-addon2">{{ button_label|default('Search') }}</button>
+            </div>
+        </div>
+    </div>
 
-    <table class="table">
+    {{ form_end(form) }}
+
+    <table class="table table-dark">
         <thead>
             <tr>
                 <th>Id</th>
@@ -19,10 +30,13 @@
             <tr>
                 <td>{{ book.id }}</td>
                 <td>{{ book.title }}</td>
-                <td>{{ book.copies }}</td>
+                <td>{{ book.getAvailableCopies() }} / {{ book.copies }}</td>
                 <td>
-                    <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
-                    <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                    <a class="btn btn-outline-light btn-sm" href="{{ path('book_show', {'id': book.id}) }}">show</a>
+                    <a class="btn btn-outline-light btn-sm" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                    {% if book.getAvailableCopies() > 0 %}
+                        <a class="btn btn-outline-light btn-sm" href="{{ path('loan_new', {'book_id': book.id}) }}"><i class="bi bi-clipboard-plus"></i></a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -33,5 +47,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('book_new') }}">Create new</a>
+    <a class="btn btn-outline-light" href="{{ path('book_new') }}">Add Book</a>
 {% endblock %}

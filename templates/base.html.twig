@@ -3,17 +3,31 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
-           and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
+            {{ encore_entry_link_tags('global') }}
         {% endblock %}
 
         {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="d-flex h-100 text-center text-white bg-dark">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column" style="max-width: 1024px;">
+        <header class="mb-auto">
+            <div>
+                <h3 class="float-md-start mb-0">Library Manager</h3>
+                <nav class="nav nav-masthead justify-content-center float-md-end">
+                    <a class="btn btn-outline-light btn-sm m-1" href="/">Home</a>
+                    <a class="btn btn-outline-light btn-sm m-1" href="/book">Books</a>
+                    <a class="btn btn-outline-light btn-sm m-1" href="/loan">Loans</a>
+                </nav>
+            </div>
+        </header>
+        <main class="px-3">
+            <div class="col-md-12">
+            {% block body %}{% endblock %}
+            </div>
+        </main>
+        </div>
     </body>
 </html>

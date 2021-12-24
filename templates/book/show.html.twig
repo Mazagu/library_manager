@@ -3,28 +3,30 @@
 {% block title %}Book{% endblock %}
 
 {% block body %}
-    <h1>Book</h1>
+    <h1>{{ book.title }}</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ book.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ book.title }}</td>
-            </tr>
+    <table class="table table-dark">
+        <thead>
             <tr>
                 <th>Copies</th>
-                <td>{{ book.copies }}</td>
+                <th>Available</th>
+                <th>Borrowed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{book.copies}}</td>
+                <td>{{book.getAvailableCopies()}}</td>
+                <td>{{book.copies - book.getAvailableCopies()}}</td>
             </tr>
         </tbody>
     </table>
+    {{ include('loan/_loans_list.html.twig', {'loans': book.loans}) }}
 
-    <a href="{{ path('book_index') }}">back to list</a>
-
-    <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
-
+    <a class="btn btn-outline-light" href="{{ path('book_index') }}">back to list</a>
+    <a class="btn btn-outline-light" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+    {% if book.getAvailableCopies() > 0 %}
+        <a class="btn btn-outline-light" href="{{ path('loan_new', {'book_id': book.id}) }}"><i class="bi bi-clipboard-plus"></i> Lend a copy</a>
+    {% endif %}
     {{ include('book/_delete_form.html.twig') }}
 {% endblock %}

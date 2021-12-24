@@ -1,4 +1,20 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="row mb-3">
+        <h3>Borrower data</h3>
+        <div class="col-md-4">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.id_card) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.phone_number) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-end">
+            <button class="btn btn-outline-light">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
 {{ form_end(form) }}

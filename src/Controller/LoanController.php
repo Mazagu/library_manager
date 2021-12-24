@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
 use App\Entity\Loan;
 use App\Form\LoanType;
 use App\Repository\LoanRepository;
@@ -27,15 +28,18 @@ class LoanController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="loan_new", methods={"GET", "POST"})
+     * @Route("/new/{book_id}", name="loan_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, $book_id): Response
     {
         $loan = new Loan();
+        $book = $entityManager->getRepository(Book::class)->find($book_id);
+        $loan->setBook($book);
         $form = $this->createForm(LoanType::class, $loan);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $loan->setLoanDate(new \DateTime());
             $entityManager->persist($loan);
             $entityManager->flush();
 
@@ -56,6 +60,18 @@ class LoanController extends AbstractController
         return $this->render('loan/show.html.twig', [
             'loan' => $loan,
         ]);
+    }
+
+    /**
+     * @Route("/return/{id}", name="loan_return", methods={"GET"})
+     */
+    public function return(Loan $loan, EntityManagerInterface $entityManager): Response
+    {
+        $loan->setReturnDate(new \DateTime());
+        $entityManager->persist($loan);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('loan_index', [], Response::HTTP_SEE_OTHER);
     }
 
     /**
